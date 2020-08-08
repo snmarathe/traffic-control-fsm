@@ -1,5 +1,12 @@
+/* Traffic Controller - Mealy FSM */
+/*Note: For outputs north, south, east, west - 
+001 - Red
+010 - Yellow
+100 - Green
+*/
+
 module traffic_fsm (
-  input clk, rst,
+  input clk, rst_n, rst_e, rst_s, rst_w,
   output reg [2:0] north, south, east, west
 );
 
@@ -22,9 +29,12 @@ begin
 end  
 
 //always block for state change
-always @ (posedge clk or posedge rst)
+always @ (posedge clk or posedge rst_n or posedge rst_e or posedge rst_s or posedge rst_w)
 begin
-  if (rst) curr_state <= NORTH_G;
+  if (rst_n) curr_state <= NORTH_G;
+  else if (rst_e) curr_state <= EAST_G;
+  else if (rst_s) curr_state <= SOUTH_G;
+  else if (rst_w) curr_state <= WEST_G;
   else curr_state <= next_state;
 end
 
